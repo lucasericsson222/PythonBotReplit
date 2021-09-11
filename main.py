@@ -23,6 +23,11 @@ ALLQ = os.environ['ALL']
 ANDYOUANDITEXT = os.environ['ANDYOU']
 client = discord.Client()
 
+def remove_prefix(text, prefix):
+    if text.startswith(prefix):
+        return text[len(prefix):]
+    return text  # or whatever
+
 
 def findWholeWord(w):
     return re.compile(r'\b({0})\b'.format(w), flags=re.IGNORECASE).search
@@ -54,7 +59,7 @@ async def on_message(message):
         if int(message.author.id) == int(ALLQ): 
             if "tall" in message.content or "Tall" in message.content:
                  await message.reply("short.")
-    if client.user.mentioned_in(message):
+    if client.user.mentioned_in(message) and message.author != client.user:
         await message.reply("kk")
 
 
@@ -79,7 +84,7 @@ async def word_check(message):
     
 async def commands(message):
     if message.content.startswith("$google"):
-        for j in search(message.content.removeprefix("$google"), tld="co.in", num=1, stop=1, pause=2):
+        for j in search(remove_prefix(message.content,"$google"), tld="co.in", num=1, stop=1, pause=2):
             await message.reply(j)
     if message.content.startswith("$magic8"):
         q = ""
@@ -118,8 +123,8 @@ async def commands(message):
             if i in message.content.lower():
                 message.reply("this phrase is already used")
                 return
-        if message.content.removeprefix("$addtrigger ").partition(":")[1]:
-            data[message.content.removeprefix("$addtrigger ").partition(":")[0]] = message.content.removeprefix("$addtrigger ").partition(":")[2]
+        if remove_prefix(message.content,"$addtrigger ").partition(":")[1]:
+            data[remove_prefix(message.content,"$addtrigger ").partition(":")[0]] = remove_prefix(message.content,"$addtrigger ").partition(":")[2]
         f.close()
         with open('responses.json', 'w') as outfile:
             json.dump(data, outfile, indent = 6)
@@ -135,7 +140,7 @@ async def commands(message):
         # list
         for i in data:
             if i in message.content.lower():
-                if message.content.removeprefix("$removetrigger ") == i:
+                if remove_prefix(message.content,"$removetrigger ") == i:
                     data.pop(i)
                     await message.reply("the phrase has been removed")
                     f.close()
