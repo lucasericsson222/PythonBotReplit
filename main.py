@@ -11,6 +11,7 @@ from discord import channel
 from discord.ext import commands
 from random import randint, seed
 from random import random
+import random
 try:
     from googlesearch import search
 except ImportError:
@@ -88,7 +89,7 @@ async def commands(message):
             await message.reply(j)
     if message.content.startswith("$magic8"):
         q = ""
-        v = randint(0,9)
+        v = randint(0,13)
         if v == 0:
                 q = "No"
         if v == 1:
@@ -108,8 +109,30 @@ async def commands(message):
         if v == 8:
                 q = "I'm not going to answer that"
         if v == 9: 
-                q = "Yes AND no"
+               q = "Yes AND no"
+        if v == 10:
+                q = "In 10 hours, the answer will be yes. However, for now it is no."
+        if v == 11:
+                q = "Nej"
+        if v == 12:
+                q = "Ja"
+        if v == 13:
+                q = "Jag är inte sköldpaddorna, därför, Ja"
         await message.reply(q)
+    if message.content.startswith("$testanswer"):
+        q = ""
+        v = randint(0,3)
+        if v == 0:
+            q = "A"
+        if v == 1:
+            q = "B"
+        if v == 2:
+            q = "C"
+        if v == 3:
+            q = "D"
+        await message.reply(q)
+    if message.content.startswith("$probability"):
+        await message.reply(str(round(random.random()*100))+ "%")
     if message.content.startswith("$addtrigger "):
         f = open('responses.json',)
   
